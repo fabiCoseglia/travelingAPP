@@ -1,18 +1,50 @@
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from "react-native";
-import React, { useEffect } from "react";
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView, ToastAndroid } from "react-native";
+import React, { useEffect, useState } from "react";
 import { useNavigation, useRouter } from "expo-router";
 import { Colors } from "../../../constants/Colors";
+import { auth } from "../../../configs/FirebaseConfig";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 
 export default function SignIn() {
   const navigation = useNavigation();
   const router = useRouter();
+
+  const [email,setEmail] = useState();
+  const [password,setPassword] = useState();
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, []);
+
+  const onSignIn = () => {
+    if(!email && !password){
+      ToastAndroid.show('Email and Password are required',ToastAndroid.BOTTOM)
+    };
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        console.log('SUCCESS LOGIN!!!');
+        
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorMessage);
+        if(errorMessage == 'Firebase: Error (auth/invalid-email).'){
+          ToastAndroid.show('Invalid credentials',ToastAndroid.BOTTOM)
+        }
+      });
+      
+  };
+
   return (
-    <View
+    <ScrollView
       style={{
         padding: 25,
         backgroundColor: Colors.WHITE,
@@ -46,8 +78,6 @@ export default function SignIn() {
             marginTop:-40
         }} />
 
-
-    
       <View style={{
         marginTop:-80
       }}>
@@ -55,7 +85,9 @@ export default function SignIn() {
             fontFamily:'outfit',
             marginBottom:5
         }}>Email</Text>
-        <TextInput style={styles.input} placeholder="Enter Email" />
+        <TextInput style={styles.input} placeholder="Enter Email"
+        onChangeText={(value)=>setEmail(value)}
+        />
       </View>
 
       <View style={{
@@ -65,7 +97,9 @@ export default function SignIn() {
             fontFamily:'outfit',
             marginBottom:5
         }}>Password</Text>
-        <TextInput secureTextEntry={true} style={styles.input} placeholder="Enter Password" />
+        <TextInput secureTextEntry={true} style={styles.input} placeholder="Enter Password"
+        onChangeText={(value)=>setPassword(value)}
+        />
       </View>
 
         <TouchableOpacity style={{
@@ -73,7 +107,9 @@ export default function SignIn() {
             backgroundColor: Colors.PRIMARY,
             borderRadius:15,
             marginTop:15
-        }}>
+        }}
+        onPress={onSignIn}
+        >
             <Text style={{
                 color:Colors.WHITE,
                 textAlign:'center'
@@ -90,10 +126,10 @@ export default function SignIn() {
         }}>
             <Text style={{
                 textAlign:'center'
-            }} >Create Acount</Text>
+            }} >Sign Up</Text>
         </TouchableOpacity>
 
-    </View>
+    </ScrollView>
   );
 }
 
