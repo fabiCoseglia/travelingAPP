@@ -1,11 +1,12 @@
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ToastAndroid, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import { router, useNavigation } from 'expo-router'
+import { router, useNavigation, useRouter } from 'expo-router'
 import { Colors } from '../../../constants/Colors';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from "../../../configs/FirebaseConfig";
 
 export default function SignUp() {
+  const router = useRouter()
   const navigation = useNavigation();
   const [email,setEmail] = useState();
   const [password,setPassword] = useState();
@@ -34,7 +35,9 @@ export default function SignUp() {
     // Signed up 
     const user = userCredential.user;
     console.log(user);
-    
+    console.log('CREATE USER SUCCESS!');
+    ToastAndroid.show('User created!',ToastAndroid.BOTTOM);
+    router.push('auth/sign-in')
   })
   .catch((error) => {
     const errorCode = error.code;
@@ -104,6 +107,8 @@ export default function SignUp() {
             Email
           </Text>
           <TextInput
+            keyboardType="email-address"
+            autoCapitalize="none"
             style={styles.input}
             placeholder="Enter Email"
             onChangeText={(value) => setEmail(value)}

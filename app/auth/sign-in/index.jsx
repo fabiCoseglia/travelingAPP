@@ -85,7 +85,11 @@ export default function SignIn() {
             fontFamily:'outfit',
             marginBottom:5
         }}>Email</Text>
-        <TextInput style={styles.input} placeholder="Enter Email"
+        <TextInput
+        keyboardType="email-address"
+        autoCapitalize="none"
+        style={styles.input} 
+        placeholder="Enter Email"
         onChangeText={(value)=>setEmail(value)}
         />
       </View>
@@ -126,7 +130,7 @@ export default function SignIn() {
         }}>
             <Text style={{
                 textAlign:'center'
-            }} >Sign Up</Text>
+            }} >Register</Text>
         </TouchableOpacity>
 
     </ScrollView>
