@@ -30,6 +30,7 @@ export default function SignIn() {
         const user = userCredential.user;
         console.log(user);
         console.log('SUCCESS LOGIN!!!');
+        router.push('mytrip')
         
       })
       .catch((error) => {
